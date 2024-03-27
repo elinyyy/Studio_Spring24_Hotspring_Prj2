@@ -55,7 +55,7 @@ const onsens = [{
         "temperature": "90C/194F",
         "year": "Unknown",
         "img":"https://selected-ryokan.com/wp-content/uploads/2015/06/hotel-mahoroba_lo001lo002.jpg",
-        "effects":"Rheumatism, Menopause, anemia, skin illness, menstrual illnessv",
+        "effects":"Rheumatism, Menopause, anemia, skin illness, menstrual illness",
     },
 
     {
@@ -249,6 +249,57 @@ const onsens = [{
 
 
 }];
+var map = L.map('map').setView([38.11880936922593, 138.34374705417355],4);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    tileSize: 512,
+    zoomOffset: -1,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+var dotCoordinates = [
+    [36.62308096456125, 138.59311097419803],  //kusatsu
+    [35.80888333974769, 137.23624936401777],  //Gero
+    [33.85241325470183, 132.78394837845303],  //Dougo
+    [33.29504463872149, 131.48449002592739],  //Beppu
+    [34.794210596067124, 135.24636807095618],  //Arima
+    [42.49440697543258, 141.14303239790127],  //Noboribetsu
+    [31.237311337554626, 130.6368914329531],  //Ibusuki
+    [35.24709673141864, 139.05475320028808],  //Hakone
+    [35.62652824142141, 134.81256646898527],  //Kinosaki
+    [33.26464347653399, 131.35930123740667],  //Yufuin
+    [35.55568014755379, 134.4897265476829],  //Yumura
+    [37.488400647039825, 139.93474343278632],  //Higashiyama
+    [35.91674315065425, 137.6096339757547],  //Mitake
+    [37.4480752012204, 139.94331259042772],  //Yunokami
+    [34.165462939252, 131.45197562035054],  //Yuta
+    [38.35963743658822, 140.38367411263292],  //Tendo
+    [35.45977180893759, 138.83833479442148],  //Hakkai
+    [34.889353574727735, 138.92573142305366],  //Yugashima
+    [37.48754423490311, 140.26499625373108],  //Hakkai
+    [36.17291771182737, 136.90259897601587],  //Bandai Atami
+    [36.63810169942154, 138.5123858212901],  //Shirakawa
+    [36.21656952506615, 136.24842674577565],  //Manza
+    [38.795732989521575, 140.66898791803885],  //Kakenagashi
+    [31.59137066992147, 130.59560469060418],  //Miyagiino
+    [35.91674315065425, 137.5972743569546],  //yakushino
+];
+
+var circleArray = [];
+
+// Loop through the coordinates array and create a red dot for each set of coordinates
+dotCoordinates.forEach((coord,index)=> {
+    let circle = L.circleMarker(coord,{
+        color: 'blue',
+        fillOpacity: 0.75,
+        radius: 2
+    }).addTo(map); 
+    
+    circleArray.push(circle);
+});
+console.log (circleArray);
+
 
 // window.addEventListener('load', ()=>{
 //     init();
@@ -282,11 +333,14 @@ const onsens = [{
 
 const buildOnsenItemTest = function(onsen){
     return `
-    <img src="${onsen.img}" class="images">
+    <div class="image-container">
+        <img src="${onsen.img}" class="images">
+        <h2  class="name">${onsen.name}</h2>
+    </div>
         <div class="text-content">
         <span class="ebcf_close">&times;</span>
-            <h1>${onsen.name}</h1>
-            <h2>${onsen.location}</h2>
+            <h2>${onsen.name}</h2>
+            <h3>${onsen.location}</h3>
             <p class="mineralsIcon">${onsen.minerals}</p>
             <p class="yearIcon">${onsen.year}</p>
             <p class="temperatureIcon">${onsen.temperature}</p>
@@ -308,15 +362,54 @@ for(var i=0;i<numberOfImage;i++){
     tempDIV.innerHTML=buildOnsenItemTest(onsens[i]);
     let textelement = tempDIV.querySelector('.text-content');
     let imageelement = tempDIV.querySelector('img');
+    imageelement.dataset.index=i;
     let ebSpan = tempDIV.querySelector('.ebcf_close');
     console.log(textelement);
     console.log(tempDIV);
     imageelement.addEventListener('click',(e)=>{
         textelement.style.display = 'block';
+        console.log (circleArray[0]);
+
+        circleArray.forEach((circ,index)=>{
+            
+            console.log (circ,index,i);
+
+
+
+            if (index==Number(imageelement.dataset.index)){
+
+                // circ.options.opacity=1;
+            // circ.options.fillOpacity=1;
+            // circ.options.radius=200000000000;
+            // circ.radius=200000000000;
+            // circleArray[index].setRadius(200000000000);
+            circleArray[index].setStyle({color: 'red',opacity:1,fillOpacity:0.75});
+        
+
+        }
+            
+            else {
+                // circ.setRadius(0.0001);
+                circleArray[index].setStyle({color: 'red',opacity:0,fillOpacity:0});
+            
+            }
+            // circ.setRadius(2000);
+        });
+        // circleArray[0].setRadius(200000000000);
+
+
     });
+
+    
 
     ebSpan.addEventListener('click',(e)=>{
         textelement.style.display = 'none';
+        circleArray.forEach((circ,index)=>{
+            circleArray[index].setStyle({color: 'blue',opacity:1,fillOpacity:0.75});
+        });
+
+
+
     });
 
     console.log('creating image');
@@ -335,55 +428,4 @@ gridContainer.addEventListener('click',(e)=>{
 // }
 
 
-var map = L.map('map').setView([38.11880936922593, 138.34374705417355],4);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
-
-// var Circle = L.circle([36.6185520429305, 138.5754683740618], {
-//     color: 'red',
-//     fillColor: '#f03',
-//     fillOpacity: 0.5,
-//     radius: 500
-// }).addTo(map);
-
-
-var dotCoordinates = [
-    [36.62308096456125, 138.59311097419803],  //kusatsu
-    [35.80888333974769, 137.23624936401777],  //Gero
-    [33.85241325470183, 132.78394837845303],  //Dougo
-    [33.29504463872149, 131.48449002592739],  //Beppu
-    [34.794210596067124, 135.24636807095618],  //Arima
-    [42.49440697543258, 141.14303239790127],  //Noboribetsu
-    [31.237311337554626, 130.6368914329531],  //Ibusuki
-    [35.24709673141864, 139.05475320028808],  //Hakone
-    [35.62652824142141, 134.81256646898527],  //Kinosaki
-    [33.26464347653399, 131.35930123740667],  //Yufuin
-    [35.55568014755379, 134.4897265476829],  //Yumura
-    [37.488400647039825, 139.93474343278632],  //Higashiyama
-    [35.91674315065425, 137.6096339757547],  //Mitake
-    [37.4480752012204, 139.94331259042772],  //Yunokami
-    [34.165462939252, 131.45197562035054],  //Yuta
-    [38.35963743658822, 140.38367411263292],  //Tendo
-    [35.45977180893759, 138.83833479442148],  //Hakkai
-    [34.889353574727735, 138.92573142305366],  //Yugashima
-    [37.48754423490311, 140.26499625373108],  //Hakkai
-    [36.17291771182737, 136.90259897601587],  //Bandai Atami
-    [36.63810169942154, 138.5123858212901],  //Shirakawa
-    [36.21656952506615, 136.24842674577565],  //Manza
-    [38.795732989521575, 140.66898791803885],  //Kakenagashi
-    [31.59137066992147, 130.59560469060418],  //Miyagiino
-    [35.91674315065425, 137.5972743569546],  //yakushino
-];
-
-// Loop through the coordinates array and create a red dot for each set of coordinates
-dotCoordinates.forEach(function(coord) {
-    var circle = L.circle(coord, {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 500
-    }).addTo(map); // Add each red dot to the map
-});
-
+// 
