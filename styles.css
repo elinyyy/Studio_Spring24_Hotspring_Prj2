@@ -227,7 +227,7 @@ p {
 
 
 
-
+/* 
 .sidenav {
     height: 100%;
     width: 35vmin;
@@ -244,8 +244,8 @@ p {
   @media (max-width: 320px) {
     .sidenav {
         width: 15vw; 
-    }
-}
+    } */
+/* } */
 
 
 
@@ -255,21 +255,6 @@ p {
 
 };
 
-@media (max-width: 415px) {
-    /* Change to 2-column grid layout for mobile */
-    #manyOnsens {
-        font-size: 15px;
-    }
-
-    /* #温泉 {
-        font-size: 50px;
-    } */
-    
-    #grid-container-parent {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: auto; 
-    }
-}
   #grid-container-parent {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -277,5 +262,12 @@ p {
     grid-gap: 15px;
     grid-row-gap: 60px;
     height:auto;
-    width: 100%;
+}
+
+@media (max-width: 375) {
+    #grid-container-parent {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-rows: auto; 
+    }
 }
